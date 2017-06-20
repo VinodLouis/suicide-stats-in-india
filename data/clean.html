@@ -1,0 +1,96 @@
+<html>
+    <head>
+    <meta charset="utf-8">
+  <meta name="description" content="Indian rainfall 2004 - 2010 district wise.">
+        <title>Historical Rainfall stats</title>
+        <link href="css/tipsy/tipsy.css" rel="stylesheet"/>
+        <script type="text/javascript" src="scripts/vendor/jquery/jquery-1.6.2.min.js"></script>
+        <script type="text/javascript" src="scripts/vendor/tipsy/tipsy.js"></script>
+        <script src="scripts/vendor/d3/d3.v3.min.js"></script>
+    </head>
+    <body>
+        
+    </body>
+    <script type="text/javascript">
+        var arrMapping = [];
+        arrMapping["A & N ISLANDS"] = "AN";
+        arrMapping["ANDHRA PRADESH"] = "AP";
+        arrMapping["ARUNACHAL PRADESH"] = "AR";
+        arrMapping["ASSAM"] = "AS";
+        arrMapping["BIHAR"] = "BR";
+        arrMapping["CHANDIGARH"] = "CH";
+        arrMapping["CHHATTISGARH"] = "CG";
+        arrMapping["D & N HAVELI"] = "DN";
+        arrMapping["DAMAN & DIU"] = "DD";
+        arrMapping["DELHI (UT)"] = "DL";
+        arrMapping["GOA"] = "GA";
+        arrMapping["GUJARAT"] = "GJ";
+        arrMapping["HARYANA"] = "HR";
+        arrMapping["HIMACHAL PRADESH"] = "HP";
+        arrMapping["JAMMU & KASHMIR"] = "JK";
+        arrMapping["JHARKHAND"] = "JH";
+        arrMapping["KARNATAKA"] = "KA";
+        arrMapping["KERALA"] = "KL";
+        arrMapping["LAKSHADWEEP"] = "LD";
+        arrMapping["MADHYA PRADESH"] = "MP";
+        arrMapping["MAHARASHTRA"] = "MH";
+        arrMapping["MANIPUR"] = "MN";
+        arrMapping["MEGHALAYA"] = "ML";
+        arrMapping["MIZORAM"] = "MZ";
+        arrMapping["NAGALAND"] = "NG";
+        arrMapping["ODISHA"] = "OD";
+        arrMapping["PUDUCHERRY"] = "PY";
+        arrMapping["PUNJAB"] = "PN";
+        arrMapping["RAJASTHAN"] = "RJ";
+        arrMapping["SIKKIM"] = "SK";
+        arrMapping["TAMIL NADU"] = "TN";
+        arrMapping["TRIPURA"] = "TR";
+        arrMapping["UTTAR PRADESH"] = "UP";
+        arrMapping["UTTARAKHAND"] = "UK";
+        arrMapping["WEST BENGAL"] = "WB";
+        var arrState = Object.keys(arrMapping); 
+        var arrAll = [];
+        d3.json("data/agg.json",function(err,data){
+
+            /*
+            for(var i=2001;i<2014;i++){
+                arrState.forEach(function(el){
+                    var arOTH = data.filter(function(e){
+                        e["shortCode"] = arrMapping[e["STATE/UT"]];
+                        return(e["STATE/UT"] == el && e["Year"] == i && e["CAUSE"] == "Others (Please Specify)");               
+                    });
+
+                    for(var prop in arOTH[0]){
+                        if(typeof(arOTH[0][prop]) == "number" && prop != "Year"){
+                            arOTH[0][prop] += arOTH[1][prop]
+                        }
+                    }
+
+                    arrAll.push(arOTH[0]);
+
+                    var narOTH = data.filter(function(e){
+                        //e["shortCode"] = arrMapping[e["STATE/UT"]];
+                        return(e["STATE/UT"] == el && e["Year"] == i && e["CAUSE"] != "Others (Please Specify)");               
+                    }); 
+
+                                        
+                    arrAll = arrAll.concat(narOTH); 
+                });
+            }*/
+
+
+            arrState.forEach(function(el){
+                var temp = {state:el,code:arrMapping[el]}
+                for(var i=2001;i<2014;i++){
+                    var obj = data.find(function(e){
+                        return(e["STATE/UT"] == el && e["Year"] == i && e["CAUSE"] == "Total");
+                    });
+                    temp[i.toString()] = obj["Grand Total"];
+                }
+                arrAll.push(temp);
+            });
+            console.log(JSON.stringify(arrAll));
+
+        });
+    </script>
+ </html>       
