@@ -14,6 +14,8 @@
 
         <script type="text/javascript" src="scripts/vendor/tipsy/tipsy.js"></script>
         <script src="scripts/vendor/d3/d3.v3.min.js"></script>
+        <script src="scripts/vendor/d3/d3.geo.tile.v0.min.js"></script>
+        <script src="scripts/vendor/d3/topojson.v0.min.js"></script>
 </head>
 
 <style>
@@ -21,6 +23,57 @@
 body {
   font: 10px sans-serif;
 }
+
+.subunit {
+  fill: none;
+  stroke: #597a99;
+  stroke-width: .5;
+}
+
+.subunit.natural-earth {
+  fill: none;
+}
+
+
+.frame1 {
+  width: 952px;
+  height: 663px;
+  margin: 0 auto;
+  border: 2px solid #6b5d50;
+  padding: 2px;
+}
+
+.frame2 {
+  border: 1px solid #a19e8d;
+  padding: 20px;
+}
+
+#rmap {
+  background: #a3bfd5;
+}
+
+.place {
+  fill: rgba(255,255,255,0.01);
+  stroke: #584f46;
+}
+
+#states {
+  fill: rgba(255,255,255,0.01);
+  stroke: #7D947C;
+  stroke-width: .5px;
+}
+
+text {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 10px;
+  pointer-events: none;
+}
+
+.line {
+  fill: none;
+  stroke: #ddd;
+}
+
 
 .axis path,
 .axis line {
@@ -57,7 +110,11 @@ label {
     }
 
     .flex-box-map{
-        flex:0 0 500px;
+        flex:0 0 400px;
+    }
+
+    .flex-box-guage{
+        flex:0 0 200px;
     }
 
     .flex-box-charts{
@@ -88,11 +145,39 @@ label {
 
     }
 
-    #pieChart1{
-        width:300px;
-        height:300px
+    #pieChart1,#pieChart2{
+        width:250px;
+        height:250px
     }
+.modal-body {
+    max-height: calc(100vh - 200px);
+    overflow-y: auto;
+}
 
+#guageChart1{
+  top: 190px;
+  position: sticky;
+}
+
+.node {
+  cursor: pointer;
+}
+
+.node circle {
+  fill: #fff;
+  stroke: steelblue;
+  stroke-width: 1.5px;
+}
+
+.node text {
+  font: 10px sans-serif;
+}
+
+.link {
+  fill: none;
+  stroke: #ccc;
+  stroke-width: 1.5px;
+}
 </style>
 <body>
     <div style="width:1200px;margin:auto">
@@ -106,18 +191,53 @@ label {
     <div id="modal-content" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
-                <div class="flex-box">
-                    <div class="flex-box-map">
-map <div id="pieChart1"></div>
+
+              <!--<div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+              </div>-->
+
+              <div class="modal-body">
+
+                <!-- Nav tabs -->
+                  <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Insights</a></li>
+                    <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Deep Insights</a></li>
+                  </ul>
+
+                  <!-- Tab panes -->
+                  <div class="tab-content">
+                    <div role="tabpanel" class="tab-pane active" id="home">
+                      
+                      <div class="flex-box">
+                        <div class="flex-box-map">
+                          
+                          <div id="map"></div>
+                          
+                        </div>
+                        <div class="flex-box-charts">
+                          <div id="pieChart1"></div>
+                          <div id="pieChart2"></div>
+                        </div>
+                        <div class="flex-box-guage">
+                        <div id="guageChart1"></div>
+                        </div>
+                      </div>
                     </div>
-                    <div class="flex-box-charts">
-<div id="guageChart1"></div>
+                    <div role="tabpanel" class="tab-pane" id="profile">
+                      <div id="collapsible"></div>
                     </div>
-                </div>
+                    
+                  </div>
+
+
+                
+              </div> 
+              <div class="modal-footer">
+                        <button type="button" data-dismiss="modal" class="btn btn-primary">close</button>
+                    </div>  
             </div>
         </div>
     </div>
-
 
 <script>
 
@@ -167,7 +287,7 @@ d3.select("label")
 d3.json("data/state_wise_agg.json", function(error, data) {
   if (error) throw error;
 
-  color.domain(d3.keys(data[0]).filter(function(key) { return (key !== "state" && key !== "code"); }));
+  color.domain(d3.keys(data[0]).filter(function(key) { return (key !== "state" && key !== "code" && key !== "position"); }));
 
   data.forEach(function(d) {
     var mystate = d.code; //add to stock code
@@ -497,6 +617,291 @@ d3.json("data/state_wise_agg.json", function(error, data) {
 
 });
 
+var statesJson,topoJson,insightsJson = null;
+d3.json("data/in-states-topo.json", function(err,data) {
+  statesJson = data;
+});
+
+d3.json("data/in-demo-topo.json", function(error, data) {
+  topoJson = data;
+});
+
+d3.json("data/flare.json", function(error, data) {
+  insightsJson = data;
+});
+
+
+function drawCollapsible(data){
+  $("#collapsible").html("");
+
+  var margin = {top: 20, right: 120, bottom: 20, left: 120},
+    width = 800 - margin.right - margin.left,
+    height = 600 - margin.top - margin.bottom;
+
+var i = 0,
+    duration = 750,
+    root;
+
+var tree = d3.layout.tree()
+    .size([height, width]);
+
+var diagonal = d3.svg.diagonal()
+    .projection(function(d) { return [d.y, d.x]; });
+
+var svg = d3.select("#collapsible").append("svg")
+    .attr("width", width + margin.right + margin.left)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+function update(source) {
+
+  // Compute the new tree layout.
+  var nodes = tree.nodes(root).reverse(),
+      links = tree.links(nodes);
+
+  // Normalize for fixed-depth.
+  nodes.forEach(function(d) { d.y = d.depth * 180; });
+
+  // Update the nodes…
+  var node = svg.selectAll("g.node")
+      .data(nodes, function(d) { return d.id || (d.id = ++i); });
+
+  // Enter any new nodes at the parent's previous position.
+  var nodeEnter = node.enter().append("g")
+      .attr("class", "node")
+      .attr("transform", function(d) { return "translate(" + source.y0 + "," + source.x0 + ")"; })
+      .on("click", click);
+
+  nodeEnter.append("circle")
+      .attr("r", 1e-6)
+      .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
+
+  nodeEnter.append("text")
+      .attr("x", function(d) { return d.children || d._children ? -10 : 10; })
+      .attr("dy", ".35em")
+      .attr("text-anchor", function(d) { return d.children || d._children ? "end" : "start"; })
+      .text(function(d) { return d.name; })
+      .style("fill-opacity", 1e-6);
+
+  // Transition nodes to their new position.
+  var nodeUpdate = node.transition()
+      .duration(duration)
+      .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; });
+
+  nodeUpdate.select("circle")
+      .attr("r", 4.5)
+      .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
+
+  nodeUpdate.select("text")
+      .style("fill-opacity", 1);
+
+  // Transition exiting nodes to the parent's new position.
+  var nodeExit = node.exit().transition()
+      .duration(duration)
+      .attr("transform", function(d) { return "translate(" + source.y + "," + source.x + ")"; })
+      .remove();
+
+  nodeExit.select("circle")
+      .attr("r", 1e-6);
+
+  nodeExit.select("text")
+      .style("fill-opacity", 1e-6);
+
+  // Update the links…
+  var link = svg.selectAll("path.link")
+      .data(links, function(d) { return d.target.id; });
+
+  // Enter any new links at the parent's previous position.
+  link.enter().insert("path", "g")
+      .attr("class", "link")
+      .attr("d", function(d) {
+        var o = {x: source.x0, y: source.y0};
+        return diagonal({source: o, target: o});
+      });
+
+  // Transition links to their new position.
+  link.transition()
+      .duration(duration)
+      .attr("d", diagonal);
+
+  // Transition exiting nodes to the parent's new position.
+  link.exit().transition()
+      .duration(duration)
+      .attr("d", function(d) {
+        var o = {x: source.x, y: source.y};
+        return diagonal({source: o, target: o});
+      })
+      .remove();
+
+  // Stash the old positions for transition.
+  nodes.forEach(function(d) {
+    d.x0 = d.x;
+    d.y0 = d.y;
+  });
+}
+
+// Toggle children on click.
+function click(d) {
+  if (d.children) {
+    d._children = d.children;
+    d.children = null;
+  } else {
+    d.children = d._children;
+    d._children = null;
+  }
+  update(d);
+}
+
+
+  root = data;
+  root.x0 = height / 2;
+  root.y0 = 0;
+
+  function collapse(d) {
+    if (d.children) {
+      d._children = d.children;
+      d._children.forEach(collapse);
+      d.children = null;
+    }
+  }
+
+  root.children.forEach(collapse);
+  update(root);
+
+
+d3.select(self.frameElement).style("height", "600px");
+}
+
+
+
+function drawMap(){
+$("#map").html("");
+
+function drawIndia(data) {
+  var subunits = topojson.object(data, data.objects.subunits);
+
+  india.selectAll("path.subpath")
+    .data(subunits.geometries)
+    .enter().append("path")
+      .attr('class', function(d) { return 'subunit ' + d.id; })
+      .attr('id', function(d) { return d.id; })
+      .attr("d", path);
+}
+
+function drawIndiaPlaces(data) {
+  indiaPlaces.selectAll("circle.place")
+      .data(data.objects.places.geometries)
+      .enter().append("circle")
+      .attr("cx", function(d){ return projection(d.coordinates)[0]})
+    .attr("cy", function(d){ return projection(d.coordinates)[1]})
+    .attr("r",2)
+      .attr("class", "place")
+    
+  indiaPlaces.selectAll("text.place")
+      .data(data.objects.places.geometries)
+      .enter().append("text")
+      .attr("x", function(d){ return projection(d.coordinates)[0]+3})
+    .attr("y", function(d){ return projection(d.coordinates)[1]+3})
+    .text(function(d){ return d.properties.name})
+      .attr("class", function(d){ return "air-" + d.properties.name});
+    
+  /*indiaPlaces.append("circle")
+    .attr("stroke-width", 5)
+    .attr("r", 2)
+    .attr("cx", projection(suratPos)[0])
+    .attr("cy", projection(suratPos)[1])
+    .attr("id","sur-ant")*/
+}
+
+// Code from D3 United States Example at http://bl.ocks.org/4150951
+function drawNaturalEarth() {
+  var tiles = tile();
+
+  india.selectAll('.subunit')
+    .classed('natural-earth', true);
+
+  var clips = defs.append("clipPath")
+      .attr("id", "clip");
+  clips.append("use")
+      .attr("xlink:href", "#INX");
+  clips.append("use")
+      .attr("xlink:href", "#INA");
+  clips.append("use")
+      .attr("xlink:href", "#INN");
+  clips.append("use")
+      .attr("xlink:href", "#INL");
+
+  ne.attr("clip-path", "url(#clip)")
+      .selectAll("image")
+        .data(tiles)
+      .enter().append("image")
+        .attr("xlink:href", function(d) { return "http://" + ["a", "b", "c", "d"][Math.random() * 4 | 0] + ".tiles.mapbox.com/v3/mapbox.natural-earth-2/" + d[2] + "/" + d[0] + "/" + d[1] + ".png"; })
+        .attr("width", Math.round(tiles.scale))
+        .attr("height", Math.round(tiles.scale))
+        .attr("x", function(d) { return Math.round((d[0] + tiles.translate[0]) * tiles.scale); })
+        .attr("y", function(d) { return Math.round((d[1] + tiles.translate[1]) * tiles.scale); });
+}
+
+function drawStates(data) {
+    states.selectAll("path")
+        .data(topojson.object(data, data.objects.states).geometries)
+      .enter().append("path")
+        .attr('class', "state")
+        .attr("title", function(d) { return d.properties.name; })
+        .attr("d", path)
+        
+  //callback();
+  
+}
+
+
+var width = 400,
+    height = 400;
+
+var projection = d3.geo.mercator()
+  .center([83, 23.5])
+  .translate([width/2,height/2])
+  .scale(690);
+
+var path = d3.geo.path()
+  .projection(projection)
+  .pointRadius(2);
+  
+var tile = d3.geo.tile()
+    .scale(projection.scale() * 2 * Math.PI)
+    .translate(projection([0, 0]))
+    .zoomDelta((window.devicePixelRatio || 1) - .5);
+
+var svg = d3.select("#map")
+  .append("svg")
+    .attr("width", width)
+    .attr("height", height);
+
+
+
+var defs = svg.append("defs");
+
+var ne = svg.append("g")
+  .attr("id", "natural-earth");
+
+var india = svg.append("g")
+  .attr("id", "india");
+
+var indiaPlaces = svg.append("g")
+  .attr("id", "places");
+
+var states = svg.append("g")
+  .attr("id", "states");
+
+  drawNaturalEarth();
+  drawIndia(topoJson);
+  drawIndiaPlaces(topoJson);
+  drawStates(statesJson)
+
+
+}
+
 
 function drawGuage(data,ele){
     $("#"+ele).html("");
@@ -585,8 +990,8 @@ function drawPieChart(data,ele){
     svg.append("g")
 	.attr("class", "lines");
 
-    var width = 300,
-    height = 300,
+    var width = 250,
+    height = 250,
 	radius = Math.min(width, height) / 2;
 
     var pie = d3.layout.pie()
@@ -669,7 +1074,7 @@ function drawPieChart(data,ele){
         .attr('class', 'legend')
         .attr('transform', function(d, i) {
             var height = legendRectSize + legendSpacing;
-            var offset =  height * color.domain().length / 2;
+            var offset =  height * colorPie.domain().length / 2;
             var horz = -3 * legendRectSize;
             var vert = i * height - offset;
             return 'translate(' + horz + ',' + vert + ')';
@@ -767,8 +1172,19 @@ function modalOpened(){
         {label:"Category 5", value:19},
         {label:"Category 6", value:27}
         ];
+
+        var d1 = [
+    {label:"Category 1", value:19},
+        {label:"Category 2", value:5},
+        {label:"Category 3", value:13},
+        {label:"Category 4", value:17},
+        
+        ];
     drawPieChart(d,"pieChart1");
+    drawPieChart(d1,"pieChart2");
     drawGuage([],"guageChart1");
+    drawMap();
+    drawCollapsible(insightsJson);
 }
 
 $(document).ready(function(){
