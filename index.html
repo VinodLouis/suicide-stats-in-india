@@ -2,8 +2,16 @@
 <head>
     <meta charset="utf-8">
          <link href="css/tipsy/tipsy.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script
+            src="https://code.jquery.com/jquery-1.12.4.min.js"
+            integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ="
+            crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
         <script src="scripts/vendor/d3/colorbrewer.js"></script>
-        <script type="text/javascript" src="scripts/vendor/jquery/jquery-1.6.2.min.js"></script>
+
         <script type="text/javascript" src="scripts/vendor/tipsy/tipsy.js"></script>
         <script src="scripts/vendor/d3/d3.v3.min.js"></script>
 </head>
@@ -44,19 +52,78 @@ label {
   color: #D8D8D8;
 }
 
+.flex-box{
+    display:flex;
+    }
+
+    .flex-box-map{
+        flex:0 0 500px;
+    }
+
+    .flex-box-charts{
+        flex:1;
+    }
+
+
+    svg.pie {
+    width: 100%;
+    height: 100%;
+    }
+
+    path.slice{
+    stroke-width:2px;
+    }
+
+    polyline{
+    opacity: .3;
+    stroke: black;
+    stroke-width: 2px;
+    fill: none;
+    }
+
+    .labelValue
+    {
+    font-size: 60%;
+    opacity: .5;
+
+    }
+
+    #pieChart1{
+        width:300px;
+        height:300px
+    }
+
 </style>
 <body>
     <div style="width:1200px;margin:auto">
         <label><input type="checkbox"> Sort values</label>
         <div id="aggViz"></div>      
     </div>
-  
+
+    <!-- Large modal -->
+    <!--<button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bs-example-modal-lg">Large modal</button>-->
+
+    <div id="modal-content" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="flex-box">
+                    <div class="flex-box-map">
+map <div id="pieChart1"></div>
+                    </div>
+                    <div class="flex-box-charts">
+<div id="guageChart1"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
 <script>
 
 var margin = {top: 20, right: 20, bottom: 30, left: 40},
     width = 1200 - margin.left - margin.right,
-    height = 700 - margin.top - margin.bottom;
+    height = 500 - margin.top - margin.bottom;
 
 var x = d3.scale.ordinal()
     .rangeRoundBands([0, width], .1);
@@ -66,7 +133,7 @@ var y = d3.scale.linear()
 
 
 var color = d3.scale.ordinal()
-    .range(["#CC9933","#CC9900","#CC6600","#B9610E","#A75D1C","#94582A","#825338","#6F4F46","#5D4A53","#4A4661","#38416F","#253C7D","#13388B","#003399","#0000CC"]);
+    .range(["#E1C8a0","#CC9900","#CC6600","#B9610E","#A75D1C","#94582A","#825338","#6F4F46","#5D4A53","#4A4661","#38416F","#253C7D","#13388B","#003399","#000080"]);
 
 var xAxis = d3.svg.axis()
     .scale(x)
@@ -428,6 +495,284 @@ d3.json("data/state_wise_agg.json", function(error, data) {
     console.log(this.__data__);
   }
 
+});
+
+
+function drawGuage(data,ele){
+    $("#"+ele).html("");
+
+    var width = 200;
+    var height = width;
+
+    var svg = d3.select("#"+ele).append("svg")
+         .attr("width", width)
+         .attr("height", height)
+
+    var pi = Math.PI;
+
+    var arc = d3.svg.arc()
+           .innerRadius(50)
+           .outerRadius(80)
+           .startAngle(-3*pi/4);
+
+    //svg.append("text").text(this.name).attr("fill","#999999").attr("x",width/2).attr("y",height/7).attr("text-anchor","middle");
+    g = svg.append("g").attr("transform", "translate(" + width / 2 + "," + height/2 + ")");
+
+    g.append("text").text("67").attr("fill","#999999").attr("x",0).attr("y",0).attr("text-anchor","middle").style("font-size","25px");
+       // Add the background arc, from 0 to 100% (tau).
+    var background = g.append("path")
+        .datum({endAngle: -3*pi/4})
+        .style("fill", "red")
+        .attr("d", arc);
+
+    var y = d3.scale.linear()
+        .rangeRound([-3*pi/4, 3*pi/4]);
+
+        y.domain([0, 100]);
+
+       var foreground = g.append("path")
+           .datum({endAngle: -3*pi/4})
+           .style("fill", "blue")
+           .attr("d", arc);
+
+           background.transition()
+               .duration(300)
+               .attrTween("d", arcTween(3*pi/4,true))
+               .each(function(){
+                foreground.transition()
+                     .duration(1000)
+                     .attrTween("d", arcTween(y(67),false));
+               })
+
+
+       //d3.interval(function() {
+
+       //}, 1500);
+       var maxText =  g.append("text").attr("fill","#999999").attr("y",20).attr("text-anchor","middle").text("100")
+
+       function arcTween(newAngle,text) {
+         return function(d) {
+           var interpolate = d3.interpolate(d.endAngle, newAngle);
+           return function(t) {
+             d.endAngle = interpolate(t);
+             var path = arc(d);
+             var coords = path.split("L")[1].split("A")[0]; //<-- this is the position of the end of the line connecting the two arcs
+             if(text)
+                maxText.attr('transform', 'translate(' + coords + ')'); //<-- position text and rotate it
+             return arc(d);
+           };
+         };
+       }
+}
+
+function drawPieChart(data,ele){
+    $("#"+ele).html("");
+
+    var svg = d3.select("#"+ele)
+	.append("svg")
+	.attr("class","pie")
+	.append("g")
+
+    svg.append("g")
+	.attr("class", "slices");
+
+    svg.append("g")
+	.attr("class", "labelName");
+
+    svg.append("g")
+	.attr("class", "labelValue");
+
+    svg.append("g")
+	.attr("class", "lines");
+
+    var width = 300,
+    height = 300,
+	radius = Math.min(width, height) / 2;
+
+    var pie = d3.layout.pie()
+	.sort(null)
+	.value(function(d) {
+		return d.value;
+	});
+
+    var arc = d3.svg.arc()
+	    .outerRadius(radius * 0.9)
+	    .innerRadius(radius * 0.6);
+
+    var outerArc = d3.svg.arc()
+	    .innerRadius(radius * 0.9)
+	    .outerRadius(radius * 0.9);
+
+    var legendRectSize = (radius * 0.05);
+    var legendSpacing = radius * 0.02;
+
+
+
+
+    //var div = d3.select("body").append("div").attr("class", "toolTip");
+
+    svg.attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+    var colorRange = d3.scale.category20();
+
+    var colorPie = d3.scale.ordinal()
+	.range(colorRange.range());
+
+	/* ------- PIE SLICES -------*/
+	var slice = svg.select(".slices").selectAll("path.slice")
+        .data(pie(data), function(d){ return d.data.label });
+
+    slice.enter()
+        .insert("path")
+        .style("fill", function(d) { return colorPie(d.data.label); })
+        .attr("class", "slice");
+
+    slice
+        .transition().duration(1000)
+        .attrTween("d", function(d) {
+            this._current = Object.assign({}, d, { startAngle: d.endAngle });
+            var interpolate = d3.interpolate(this._current, d);
+            this._current = interpolate(0);
+            return function(t) {
+                return arc(interpolate(t));
+            };
+        })
+
+    slice
+        .on("mousemove", function(d){
+            //div.style("left", d3.event.pageX+10+"px");
+            //div.style("top", d3.event.pageY-25+"px");
+            //div.style("display", "inline-block");
+            //div.html((d.data.label)+"<br>"+(d.data.value)+"%");
+
+        });
+    slice
+        .on("mouseout", function(d){
+            //div.style("display", "none");
+        });
+
+    svg.selectAll("text")
+       .data(pie(data))
+       .enter()
+       .append("text")
+       .attr("transform", function(d) { return "translate(" + arc.centroid(d) + ")"; })
+      .attr("dy", ".35em")
+      .text(function(d) { return "dfg"; });
+
+    slice.exit()
+        .remove();
+
+    var legend = svg.selectAll('.legend')
+        .data(colorPie.domain())
+        .enter()
+        .append('g')
+        .attr('class', 'legend')
+        .attr('transform', function(d, i) {
+            var height = legendRectSize + legendSpacing;
+            var offset =  height * color.domain().length / 2;
+            var horz = -3 * legendRectSize;
+            var vert = i * height - offset;
+            return 'translate(' + horz + ',' + vert + ')';
+        });
+
+    legend.append('rect')
+        .attr('width', legendRectSize)
+        .attr('height', legendRectSize)
+        .style('fill', color)
+        .style('stroke', color);
+
+    legend.append('text')
+        .attr('x', legendRectSize + legendSpacing)
+        .attr('y', legendRectSize - legendSpacing)
+        .text(function(d) { return d; });
+
+    /* ------- TEXT LABELS -------*/
+
+    /*var text = svg.select(".labelName").selectAll("text")
+        .data(pie(data), function(d){ return d.data.label });
+
+    text.enter()
+        .append("text")
+        .attr("dy", ".35em")
+        .text(function(d) {
+            return (d.data.label+": "+d.value+"%");
+        });*/
+
+    function midAngle(d){
+        return d.startAngle + (d.endAngle - d.startAngle)/2;
+    }
+
+    /*text
+        .transition().duration(1000)
+        .attrTween("transform", function(d) {
+            this._current = this._current || d;
+            var interpolate = d3.interpolate(this._current, d);
+            this._current = interpolate(0);
+            return function(t) {
+                var d2 = interpolate(t);
+                var pos = outerArc.centroid(d2);
+                pos[0] = radius * (midAngle(d2) < Math.PI ? 1 : -1);
+                return "translate("+ pos +")";
+            };
+        })
+        .styleTween("text-anchor", function(d){
+            this._current = this._current || d;
+            var interpolate = d3.interpolate(this._current, d);
+            this._current = interpolate(0);
+            return function(t) {
+                var d2 = interpolate(t);
+                return midAngle(d2) < Math.PI ? "start":"end";
+            };
+        })
+        .text(function(d) {
+            return (d.data.label+": "+d.value+"%");
+        });
+
+
+    text.exit()
+        .remove();*/
+
+    /* ------- SLICE TO TEXT POLYLINES -------*/
+
+    /*var polyline = svg.select(".lines").selectAll("polyline")
+        .data(pie(data), function(d){ return d.data.label });
+
+    polyline.enter()
+        .append("polyline");
+
+    polyline.transition().duration(1000)
+        .attrTween("points", function(d){
+            this._current = this._current || d;
+            var interpolate = d3.interpolate(this._current, d);
+            this._current = interpolate(0);
+            return function(t) {
+                var d2 = interpolate(t);
+                var pos = outerArc.centroid(d2);
+                pos[0] = radius * 0.95 * (midAngle(d2) < Math.PI ? 1 : -1);
+                return [arc.centroid(d2), outerArc.centroid(d2), pos];
+            };
+        });
+
+    polyline.exit()
+        .remove();*/
+}
+
+function modalOpened(){
+    console.log("modal opened");
+    var d = [
+		{label:"Category 1", value:19},
+        {label:"Category 2", value:5},
+        {label:"Category 3", value:13},
+        {label:"Category 4", value:17},
+        {label:"Category 5", value:19},
+        {label:"Category 6", value:27}
+        ];
+    drawPieChart(d,"pieChart1");
+    drawGuage([],"guageChart1");
+}
+
+$(document).ready(function(){
+    $('#modal-content').on('shown.bs.modal', modalOpened);
 });
 
 </script>
