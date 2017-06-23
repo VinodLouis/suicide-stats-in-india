@@ -10,7 +10,7 @@
             integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ="
             crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-        <script src="scripts/vendor/d3/colorbrewer.js"></script>
+
 
         <script type="text/javascript" src="scripts/vendor/tipsy/tipsy.js"></script>
         <script src="scripts/vendor/d3/d3.v3.min.js"></script>
@@ -86,6 +86,9 @@ text {
   fill: steelblue;
 }
 
+    .bars{
+        cursor:pointer;
+    }
 .x.axis path {
   display: none;
 }
@@ -374,10 +377,14 @@ d3.json("data/state_wise_agg.json", function(error, data) {
                     $(this).tipsy();
                   });
 
-  /*state.selectAll("rect")
-       .on("mouseover", function(d){
-
-          var delta = d.y1 - d.y0;
+  state.selectAll("rect")
+       .on("mouseenter", function(d){
+            this.style.opacity = 0.2;
+            //this.setAttribute("x",parseFloat(this.getAttribute("x"))-5);
+            //this.setAttribute("width",parseFloat(this.getAttribute("width"))+10);
+          //this.attr("x")
+          //console.log(this);
+          /*var delta = d.y1 - d.y0;
           var xPos = parseFloat(d3.select(this).attr("x"));
           var yPos = parseFloat(d3.select(this).attr("y"));
           var height = parseFloat(d3.select(this).attr("height"))
@@ -388,14 +395,16 @@ d3.json("data/state_wise_agg.json", function(error, data) {
           .attr("x",xPos)
           .attr("y",yPos +height/2)
           .attr("class","tooltip")
-          .text(d.name +": "+ delta); 
+          .text(d.name +": "+ delta); */
           
        })
-       .on("mouseout",function(){
-          svg.select(".tooltip").remove();
-          d3.select(this).attr("stroke","pink").attr("stroke-width",0.2);
-                                
-        })*/
+       .on("mouseleave",function(){
+          /*svg.select(".tooltip").remove();
+          d3.select(this).attr("stroke","pink").attr("stroke-width",0.2);*/
+           //this.setAttribute("x",parseFloat(this.getAttribute("x"))+5);
+           //this.setAttribute("width",parseFloat(this.getAttribute("width"))-10);
+                               this.style.opacity = 1;
+        })
 
 
   var legend = svg.selectAll(".legend")
@@ -1005,8 +1014,8 @@ function drawPieChart(data,ele){
 	    .innerRadius(radius * 0.6);
 
     var outerArc = d3.svg.arc()
-	    .innerRadius(radius * 0.9)
-	    .outerRadius(radius * 0.9);
+	    .innerRadius(radius * 0.5)
+	    .outerRadius(radius * 0.95);
 
     var legendRectSize = (radius * 0.05);
     var legendSpacing = radius * 0.02;
@@ -1044,7 +1053,12 @@ function drawPieChart(data,ele){
         })
 
     slice
-        .on("mousemove", function(d){
+        .on("mouseenter", function(d){
+            d3.select(this)
+            .transition()
+            .duration(1000)
+            .attr("d", outerArc)
+
             //div.style("left", d3.event.pageX+10+"px");
             //div.style("top", d3.event.pageY-25+"px");
             //div.style("display", "inline-block");
@@ -1052,8 +1066,12 @@ function drawPieChart(data,ele){
 
         });
     slice
-        .on("mouseout", function(d){
+        .on("mouseleave", function(d){
             //div.style("display", "none");
+            d3.select(this)
+            .transition()
+            .duration(500)
+            .attr("d", arc)
         });
 
     svg.selectAll("text")
@@ -1190,5 +1208,67 @@ function modalOpened(){
 $(document).ready(function(){
     $('#modal-content').on('shown.bs.modal', modalOpened);
 });
+
+/*
+
+//cause wise
+var dataCause = data.filter(function(el){
+	return(el["CAUSE"] != "Total Self-employed" && el["CAUSE"] != "Total" && el["CAUSE"] != "Total Salaried")
+}).map(function(el){
+	return({
+  	label:el["CAUSE"],
+    value:el["Grand Total"],
+    male :el["Total Male"],
+    female:el["Total Female"]
+  });
+});
+console.log(dataCause);
+
+
+//age wise
+var dataAge = [];
+var dataAgeMock = {};
+
+data.forEach(function(el){
+	for(var pro in el){
+  	if(pro.startsWith("Male") || pro.startsWith("Female")){
+    	if(dataAgeMock[pro]){
+      	dataAgeMock[pro] += el[pro];
+      }else{
+      	dataAgeMock[pro] = el[pro]
+      }
+    }
+  }
+});
+//console.log(dataAgeMock);
+var dataAgeMockAgg = {};
+
+for(var prop in dataAgeMock){
+	var entity = prop.trim().split(" ").reverse().pop();
+  var key =  prop.replace(entity,"").trim();
+
+  if(dataAgeMockAgg[key]){
+  	dataAgeMockAgg[key]["value"] += dataAgeMock[prop];
+  }else{
+  	dataAgeMockAgg[key] = {
+    	value:dataAgeMock[prop]
+    }
+  }
+  dataAgeMockAgg[key][entity] = dataAgeMock[prop];
+}
+
+//console.log(dataAgeMockAgg);
+
+Object.keys(dataAgeMockAgg).forEach(function(el){
+	dataAge.push({
+  	label : el,
+    value : dataAgeMockAgg[el]["value"],
+    male : dataAgeMockAgg[el]["Male"],
+    female : dataAgeMockAgg[el]["Female"]
+  })
+});
+
+console.log(dataAge)
+*/
 
 </script>
