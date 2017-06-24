@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <head>
+   <title>Suicide stats of India (2001-2013)</title>
    <meta charset="utf-8"/>
+   <meta name="description" content="Suicides in India - An Insights from 2001 to 2013 data">
    <link rel="stylesheet" href="css/main.css">
    <link href="css/tipsy/tipsy.css" rel="stylesheet"/>
    <link href="scripts/vendor/bootstrap/bootstrap.min.css" rel="stylesheet"/>
@@ -9,7 +11,7 @@
    <div class="con-man bg-success">
       <div style="display:flex;padding: 0px 25px">
          <div style="color:#c80900;flex-grow:1;text-align:center;font-size: 20px">
-            <b>Suicide statictics of India - (2001 to 2013)</b>
+            <b>Suicide statictics of India, Insights by State/UT spanning accross 2001 to 2013</b>
          </div>
          <div style="flex-basis:100px;font-size: 20px">
             <span class="bg-primary note-in" data-toggle="modal" data-target="#codes">c</span> &nbsp;&nbsp;
@@ -18,7 +20,7 @@
       </div>
       <div style="width:1200px;margin:auto">
          <label><input type="checkbox"> Sort values</label>
-         <div id="aggViz"></div>
+         <div id="aggViz" style="opacity:0.4"></div>
       </div>
       <!-- Modal -->
       <div class="modal fade" id="notes" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
@@ -33,26 +35,28 @@
                      <li>
                         <b>Aggregation view :</b> 
                         <ol type="1">
-                           <li>The viz initially lods with aggregation data of all State/UT spanning from 2001 to 2013</li>
-                           <li>You can hover on any section of the charts to get an overview of each state/year and click to see more insights</li>
-                           <li>The legends at the right hand side of aggregation data are also interactive which when clicked will change the chart to that specific year</li>
-                           <li>You can sort the filteretd year above, clicking legend again will restore the chart to its previous position</li>
+                           <li>The viz initially loads with aggregation data of all State/UT spanning from 2001 to 2013.</li>
+                           <li>You can hover on any section of the charts to get an overview of each state/year and click to see more insights.</li>
+                           <li>The legends at the right hand side of aggregation data are also interactive which when clicked will change the chart to that specific year.</li>
+                           <li>You can sort the filtered year above by the sort option, clicking legend again will restore the chart to its original state.</li>
                         </ol>
                      </li>
+                     <br/>
                      <li>
                         <b>Insights View :</b> 
                         <ol type="1">
                            <li>When clicked on any of the section from Aggregation view, you will see an modal open to show insights data of selected state in selected year.</li>
-                           <li>The insights data consists of four sections Map,two pie charts and one guage chart; <small>Map takes a little time to load</small></li>
-                           <li>Pie charts show data view each for occupation/age wise suicide cases more details can been seen on hover with mouse, where as guage charts show male/female stats for the same</li>
-                           <li>The map loads data for all State/UT for the selected year, The larger the circle on map more is the suicide cases in those regions.</li>
-                           <li>Map is interactive here, when clicked on any red dots in given region the associated charts get updated simultaneously</li>
+                           <li>The insights data consists of four sections Map,two pie charts and one guage chart; <small>Map takes a little time to load</small>.</li>
+                           <li>Pie charts show data view each for occupation/age wise suicide cases, more details can been seen on hover with mouse, where as guage charts show male/female stats for the same.</li>
+                           <li>The map loads data for all State/UT for the selected year, The larger the circle on map more is the suicide cases in that region.</li>
+                           <li>Map is interactive here, when clicked on any red dots in given region the associated charts get updated simultaneously.</li>
                         </ol>
                      </li>
+                     <br/>
                      <li>
-                        <b>Deep Insights View :</b> 
+                        <b>Deeper Insights View :</b> 
                         <ol type="1">
-                           <li>In the same modal window in tab you can see a deep insight view also. It changes with the context selection from map</li>
+                           <li>In the same modal window in tab you can see a deep insight view also. It changes with the context selection from map.</li>
                            <li>The deeper insights shows you an full details of the suicide cases from starting from aggregate total to drill down till specific gender/occupation/age group.</li>
                            <li>At any point you can close modal to get back to default viz of agrregate data.</li>
                         </ol>

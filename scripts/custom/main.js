@@ -1285,9 +1285,10 @@
             paintTbl(aggData);
         });
 
-        d3.json("data/processed.json", function(error, data) {
+        d3.csv("data/processed.csv", function(error, data) {
             if (error) throw error;
             masterData = data;
+            $("#aggViz").css('opacity',1);
         });
 
         d3.json("data/in-states-topo.json", function(error, data) {
