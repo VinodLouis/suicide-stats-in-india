@@ -1,1274 +1,141 @@
 <!DOCTYPE html>
 <head>
-    <meta charset="utf-8">
-         <link href="css/tipsy/tipsy.css" rel="stylesheet"/>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-
-    <!-- Latest compiled and minified JavaScript -->
-    <script
-            src="https://code.jquery.com/jquery-1.12.4.min.js"
-            integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ="
-            crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-
-
-        <script type="text/javascript" src="scripts/vendor/tipsy/tipsy.js"></script>
-        <script src="scripts/vendor/d3/d3.v3.min.js"></script>
-        <script src="scripts/vendor/d3/d3.geo.tile.v0.min.js"></script>
-        <script src="scripts/vendor/d3/topojson.v0.min.js"></script>
+   <meta charset="utf-8"/>
+   <link rel="stylesheet" href="css/main.css">
+   <link href="css/tipsy/tipsy.css" rel="stylesheet"/>
+   <link href="scripts/vendor/bootstrap/bootstrap.min.css" rel="stylesheet"/>
 </head>
-
-<style>
-
-body {
-  font: 10px sans-serif;
-}
-
-.subunit {
-  fill: none;
-  stroke: #597a99;
-  stroke-width: .5;
-}
-
-.subunit.natural-earth {
-  fill: none;
-}
-
-
-.frame1 {
-  width: 952px;
-  height: 663px;
-  margin: 0 auto;
-  border: 2px solid #6b5d50;
-  padding: 2px;
-}
-
-.frame2 {
-  border: 1px solid #a19e8d;
-  padding: 20px;
-}
-
-#rmap {
-  background: #a3bfd5;
-}
-
-.place {
-  fill: rgba(255,255,255,0.01);
-  stroke: #584f46;
-}
-
-#states {
-  fill: rgba(255,255,255,0.01);
-  stroke: #7D947C;
-  stroke-width: .5px;
-}
-
-text {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 10px;
-  pointer-events: none;
-}
-
-.line {
-  fill: none;
-  stroke: #ddd;
-}
-
-
-.axis path,
-.axis line {
-  fill: none;
-  stroke: #000;
-  shape-rendering: crispEdges;
-}
-
-.bar {
-  fill: steelblue;
-}
-
-    .bars{
-        cursor:pointer;
-    }
-.x.axis path {
-  display: none;
-}
-
-.tooltip{
-  text-anchor: middle;
-  font-family: sans-serif;
-  font-size: 10px;
-  font-weight: bold;
-  fill:black; 
-}
-
-label {
-  position: absolute;
-  top: 400px;
-  left: 1200px;
-  color: #D8D8D8;
-}
-
-.flex-box{
-    display:flex;
-    }
-
-    .flex-box-map{
-        flex:0 0 400px;
-    }
-
-    .flex-box-guage{
-        flex:0 0 200px;
-    }
-
-    .flex-box-charts{
-        flex:1;
-    }
-
-
-    svg.pie {
-    width: 100%;
-    height: 100%;
-    }
-
-    path.slice{
-    stroke-width:2px;
-    }
-
-    polyline{
-    opacity: .3;
-    stroke: black;
-    stroke-width: 2px;
-    fill: none;
-    }
-
-    .labelValue
-    {
-    font-size: 60%;
-    opacity: .5;
-
-    }
-
-    #pieChart1,#pieChart2{
-        width:250px;
-        height:250px
-    }
-.modal-body {
-    max-height: calc(100vh - 200px);
-    overflow-y: auto;
-}
-
-#guageChart1{
-  top: 190px;
-  position: sticky;
-}
-
-.node {
-  cursor: pointer;
-}
-
-.node circle {
-  fill: #fff;
-  stroke: steelblue;
-  stroke-width: 1.5px;
-}
-
-.node text {
-  font: 10px sans-serif;
-}
-
-.link {
-  fill: none;
-  stroke: #ccc;
-  stroke-width: 1.5px;
-}
-</style>
 <body>
-    <div style="width:1200px;margin:auto">
-        <label><input type="checkbox"> Sort values</label>
-        <div id="aggViz"></div>      
-    </div>
-
-    <!-- Large modal -->
-    <!--<button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bs-example-modal-lg">Large modal</button>-->
-
-    <div id="modal-content" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
-        <div class="modal-dialog modal-lg" role="document">
+   <div class="con-man bg-success">
+      <div style="display:flex;padding: 0px 25px">
+         <div style="color:#c80900;flex-grow:1;text-align:center;font-size: 20px">
+            <b>Suicide statictics of India - (2001 to 2013)</b>
+         </div>
+         <div style="flex-basis:100px;font-size: 20px">
+            <span class="bg-primary note-in" data-toggle="modal" data-target="#codes">c</span> &nbsp;&nbsp;
+            <span class="bg-primary note-in" data-toggle="modal" data-target="#notes">i</span>
+         </div>
+      </div>
+      <div style="width:1200px;margin:auto">
+         <label><input type="checkbox"> Sort values</label>
+         <div id="aggViz"></div>
+      </div>
+      <!-- Modal -->
+      <div class="modal fade" id="notes" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
-
-              <!--<div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
-              </div>-->
-
-              <div class="modal-body">
-
-                <!-- Nav tabs -->
-                  <ul class="nav nav-tabs" role="tablist">
-                    <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Insights</a></li>
-                    <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Deep Insights</a></li>
+               <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                  <h4 class="modal-title" id="myModalLabel">Visualization Description</h4>
+               </div>
+               <div class="modal-body">
+                  <ul type="disc">
+                     <li>
+                        <b>Aggregation view :</b> 
+                        <ol type="1">
+                           <li>The viz initially lods with aggregation data of all State/UT spanning from 2001 to 2013</li>
+                           <li>You can hover on any section of the charts to get an overview of each state/year and click to see more insights</li>
+                           <li>The legends at the right hand side of aggregation data are also interactive which when clicked will change the chart to that specific year</li>
+                           <li>You can sort the filteretd year above, clicking legend again will restore the chart to its previous position</li>
+                        </ol>
+                     </li>
+                     <li>
+                        <b>Insights View :</b> 
+                        <ol type="1">
+                           <li>When clicked on any of the section from Aggregation view, you will see an modal open to show insights data of selected state in selected year.</li>
+                           <li>The insights data consists of four sections Map,two pie charts and one guage chart; <small>Map takes a little time to load</small></li>
+                           <li>Pie charts show data view each for occupation/age wise suicide cases more details can been seen on hover with mouse, where as guage charts show male/female stats for the same</li>
+                           <li>The map loads data for all State/UT for the selected year, The larger the circle on map more is the suicide cases in those regions.</li>
+                           <li>Map is interactive here, when clicked on any red dots in given region the associated charts get updated simultaneously</li>
+                        </ol>
+                     </li>
+                     <li>
+                        <b>Deep Insights View :</b> 
+                        <ol type="1">
+                           <li>In the same modal window in tab you can see a deep insight view also. It changes with the context selection from map</li>
+                           <li>The deeper insights shows you an full details of the suicide cases from starting from aggregate total to drill down till specific gender/occupation/age group.</li>
+                           <li>At any point you can close modal to get back to default viz of agrregate data.</li>
+                        </ol>
+                     </li>
                   </ul>
-
+               </div>
+               <div class="modal-footer">
+                  <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
+               </div>
+            </div>
+         </div>
+      </div>
+      <div class="modal fade" id="codes" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+         <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+               <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                  <h4 class="modal-title" id="myModalLabel">Abbrevation table for State/UT</h4>
+               </div>
+               <div class="modal-body">
+                  <div id="tblCodes">
+                  </div>
+               </div>
+               <div class="modal-footer">
+                  <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
+               </div>
+            </div>
+         </div>
+      </div>
+      <div id="modal-content" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+         <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+               <div class="modal-body">
+                  <!-- Nav tabs -->
+                  <ul class="nav nav-tabs" role="tablist">
+                     <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Insights</a></li>
+                     <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Deep Insights</a></li>
+                  </ul>
                   <!-- Tab panes -->
                   <div class="tab-content">
-                    <div role="tabpanel" class="tab-pane active" id="home">
-                      
-                      <div class="flex-box">
-                        <div class="flex-box-map">
-                          
-                          <div id="map"></div>
-                          
+                     <div role="tabpanel" class="tab-pane active" id="home">
+                        <div class="flex-box">
+                           <div class="flex-box-map">
+                              <div id="map"></div>
+                           </div>
+                           <div class="flex-box-charts">
+                              <div id="pieChart1"></div>
+                              <div id="pieChart2"></div>
+                           </div>
+                           <div class="flex-box-guage">
+                              <div id="guageChart1"></div>
+                           </div>
                         </div>
-                        <div class="flex-box-charts">
-                          <div id="pieChart1"></div>
-                          <div id="pieChart2"></div>
-                        </div>
-                        <div class="flex-box-guage">
-                        <div id="guageChart1"></div>
-                        </div>
-                      </div>
-                    </div>
-                    <div role="tabpanel" class="tab-pane" id="profile">
-                      <div id="collapsible"></div>
-                    </div>
-                    
+                     </div>
+                     <div role="tabpanel" class="tab-pane" id="profile">
+                        <div id="collapsible"></div>
+                     </div>
                   </div>
-
-
-                
-              </div> 
-              <div class="modal-footer">
-                        <button type="button" data-dismiss="modal" class="btn btn-primary">close</button>
-                    </div>  
+               </div>
+               <div class="modal-footer">
+                  <span class="pull-left bg-info" style="padding:5px 10px" id="currSeletion"></span>
+                  <button type="button" data-dismiss="modal" class="btn btn-primary">close</button>
+               </div>
             </div>
-        </div>
-    </div>
-
-<script>
-
-var margin = {top: 20, right: 20, bottom: 30, left: 40},
-    width = 1200 - margin.left - margin.right,
-    height = 500 - margin.top - margin.bottom;
-
-var x = d3.scale.ordinal()
-    .rangeRoundBands([0, width], .1);
-
-var y = d3.scale.linear()
-    .rangeRound([height, 0]);
-
-
-var color = d3.scale.ordinal()
-    .range(["#E1C8a0","#CC9900","#CC6600","#B9610E","#A75D1C","#94582A","#825338","#6F4F46","#5D4A53","#4A4661","#38416F","#253C7D","#13388B","#003399","#000080"]);
-
-var xAxis = d3.svg.axis()
-    .scale(x)
-    .orient("bottom");
-
-var yAxis = d3.svg.axis()
-    .scale(y)
-    .orient("left")
-    .tickFormat(d3.format(".2s"));
-
-var svg = d3.select("#aggViz").append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
-  .append("g")
-    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-var active_link = "0"; //to control legend selections and hover
-var legendClicked; //to control legend selections
-var legendClassArray = []; //store legend classes to select bars in plotSingle()
-var legendClassArray_orig = []; //orig (with spaces)
-var sortDescending; //if true, bars are sorted by height in descending order
-var restoreXFlag = false; //restore order of bars back to original
-
-
-//disable sort checkbox
-d3.select("label")             
-  .select("input")
-  .property("disabled", true)
-  .property("checked", false); 
-
-d3.json("data/state_wise_agg.json", function(error, data) {
-  if (error) throw error;
-
-  color.domain(d3.keys(data[0]).filter(function(key) { return (key !== "state" && key !== "code" && key !== "position"); }));
-
-  data.forEach(function(d) {
-    var mystate = d.code; //add to stock code
-    var y0 = 0;
-    //d.ages = color.domain().map(function(name) { return {name: name, y0: y0, y1: y0 += +d[name]}; });
-    d.deaths = color.domain().map(function(name) {
-      //return { mystate:mystate, name: name, y0: y0, y1: y0 += +d[name]}; });
-      return { 
-        mystate:mystate, 
-        fullstate:d.state,
-        name: name, 
-        y0: y0, 
-        y1: y0 += +d[name], 
-        value: d[name],
-        y_corrected: 0
-      }; 
-      });
-    d.total = d.deaths[d.deaths.length - 1].y1;    
-
-  });
-
-  //Sort totals in descending order
-  data.sort(function(a, b) { return b.total - a.total; });  
-
-  x.domain(data.map(function(d) { return d.code; }));
-  y.domain([0, d3.max(data, function(d) { return d.total; })]);
-
-  svg.append("g")
-      .attr("class", "x axis")
-      .attr("transform", "translate(0," + height + ")")
-      .call(xAxis);
-
-  svg.append("g")
-      .attr("class", "y axis")
-      .call(yAxis)
-    .append("text")
-      .attr("transform", "rotate(-90)")
-      .attr("y", 6)
-      .attr("dy", ".71em")
-      .style("text-anchor", "end");
-      //.text("Population");
-
-  var state = svg.selectAll(".state")
-      .data(data)
-    .enter().append("g")
-      .attr("class", "g")
-      .attr("transform", function(d) { return "translate(" + "0" + ",0)"; });
-      //.attr("transform", function(d) { return "translate(" + x(d.State) + ",0)"; })
-
-   height_diff = 0;  //height discrepancy when calculating h based on data vs y(d.y0) - y(d.y1)
-   state.selectAll("rect")
-      .data(function(d) {
-        return d.deaths; 
-      })
-    .enter().append("rect")
-      .attr("width", x.rangeBand())
-      .attr("y", function(d) {
-        height_diff = height_diff + y(d.y0) - y(d.y1) - (y(0) - y(d.value));
-        y_corrected = y(d.y1) + height_diff;
-        d.y_corrected = y_corrected //store in d for later use in restorePlot()
-
-        if (d.name === "2013") height_diff = 0; //reset for next d.mystate
-          
-        return y_corrected;    
-        // return y(d.y1);  //orig, but not accurate  
-      })
-      .attr("x",function(d) { //add to stock code
-          return x(d.mystate)
-        })
-      .attr("height", function(d) {       
-        //return y(d.y0) - y(d.y1); //heights calculated based on stacked values (inaccurate)
-        return y(0) - y(d.value); //calculate height directly from value in csv file
-      })
-      .attr("class", function(d) {        
-        classLabel = d.name.replace(/\s/g, ''); //remove spaces
-        return "bars class" + classLabel;
-      })
-      .style("fill", function(d) { return color(d.name); })
-      .on("click",barClicked)
-      .each(function(){
-                    //tipsy
-                    var s = this.__data__;
-                    d3.select(this).append("title").text(s.fullstate + " in " + s.name + " saw " + s.value + " suicides");
-                    $(this).tipsy();
-                  });
-
-  state.selectAll("rect")
-       .on("mouseenter", function(d){
-            this.style.opacity = 0.2;
-            //this.setAttribute("x",parseFloat(this.getAttribute("x"))-5);
-            //this.setAttribute("width",parseFloat(this.getAttribute("width"))+10);
-          //this.attr("x")
-          //console.log(this);
-          /*var delta = d.y1 - d.y0;
-          var xPos = parseFloat(d3.select(this).attr("x"));
-          var yPos = parseFloat(d3.select(this).attr("y"));
-          var height = parseFloat(d3.select(this).attr("height"))
-
-          d3.select(this).attr("stroke","blue").attr("stroke-width",0.8);
-
-          svg.append("text")
-          .attr("x",xPos)
-          .attr("y",yPos +height/2)
-          .attr("class","tooltip")
-          .text(d.name +": "+ delta); */
-          
-       })
-       .on("mouseleave",function(){
-          /*svg.select(".tooltip").remove();
-          d3.select(this).attr("stroke","pink").attr("stroke-width",0.2);*/
-           //this.setAttribute("x",parseFloat(this.getAttribute("x"))+5);
-           //this.setAttribute("width",parseFloat(this.getAttribute("width"))-10);
-                               this.style.opacity = 1;
-        })
-
-
-  var legend = svg.selectAll(".legend")
-      .data(color.domain().slice().reverse())
-    .enter().append("g")
-      .attr("class", function (d) {
-        legendClassArray.push(d.replace(/\s/g, '')); //remove spaces
-        legendClassArray_orig.push(d); //remove spaces
-        return "legend";
-      })
-      .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
-
-  //reverse order to match order in which bars are stacked    
-  legendClassArray = legendClassArray.reverse();
-  legendClassArray_orig = legendClassArray_orig.reverse();
-
-  legend.append("rect")
-      .attr("x", width - 18)
-      .attr("width", 18)
-      .attr("height", 18)
-      .style("fill", color)
-      .attr("id", function (d, i) {
-        return "id" + d.replace(/\s/g, '');
-      })
-      .on("mouseover",function(){        
-
-        if (active_link === "0") d3.select(this).style("cursor", "pointer");
-        else {
-          if (active_link.split("class").pop() === this.id.split("id").pop()) {
-            d3.select(this).style("cursor", "pointer");
-          } else d3.select(this).style("cursor", "auto");
-        }
-      })
-      .on("click",function(d){        
-
-        if (active_link === "0") { //nothing selected, turn on this selection
-          d3.select(this)           
-            .style("stroke", "black")
-            .style("stroke-width", 2);
-
-            active_link = this.id.split("id").pop();
-            plotSingle(this);
-
-            //gray out the others
-            for (i = 0; i < legendClassArray.length; i++) {
-              if (legendClassArray[i] != active_link) {
-                d3.select("#id" + legendClassArray[i])
-                  .style("opacity", 0.5);
-              } else sortBy = i; //save index for sorting in change()
-            }
-
-            //enable sort checkbox
-            d3.select("label").select("input").property("disabled", false)
-            d3.select("label").style("color", "black")
-            //sort the bars if checkbox is clicked            
-            d3.select("input").on("change", change);  
-           
-        } else { //deactivate
-          if (active_link === this.id.split("id").pop()) {//active square selected; turn it OFF
-            d3.select(this)           
-              .style("stroke", "none");
-            
-            //restore remaining boxes to normal opacity
-            for (i = 0; i < legendClassArray.length; i++) {              
-                d3.select("#id" + legendClassArray[i])
-                  .style("opacity", 1);
-            }
-
-            
-            if (d3.select("label").select("input").property("checked")) {              
-              restoreXFlag = true;
-            }
-            
-            //disable sort checkbox
-            d3.select("label")
-              .style("color", "#D8D8D8")
-              .select("input")
-              .property("disabled", true)
-              .property("checked", false);   
-
-
-            //sort bars back to original positions if necessary
-            change();            
-
-            //y translate selected category bars back to original y posn
-            restorePlot(d);
-
-            active_link = "0"; //reset
-          }
-
-        } //end active_link check
-                          
-                                
-      });
-
-  legend.append("text")
-      .attr("x", width - 24)
-      .attr("y", 9)
-      .attr("dy", ".35em")
-      .style("text-anchor", "end")
-      .text(function(d) { return d; });
-
-  // restore graph after a single selection
-  function restorePlot(d) {
-    //restore graph after a single selection
-    d3.selectAll(".bars:not(.class" + class_keep + ")")
-          .transition()
-          .duration(1000)
-          .delay(function() {
-            if (restoreXFlag) return 3000;
-            else return 750;
-          })
-          .attr("width", x.rangeBand()) //restore bar width
-          .style("opacity", 1);
-
-    //translate bars back up to original y-posn
-    d3.selectAll(".class" + class_keep)
-      .attr("x", function(d) { return x(d.mystate); })
-      .transition()
-      .duration(1000)
-      .delay(function () {
-        if (restoreXFlag) return 2000; //bars have to be restored to orig posn
-        else return 0;
-      })
-      .attr("y", function(d) {
-        //return y(d.y1); //not exactly correct since not based on raw data value
-        return d.y_corrected; 
-      });
-
-    //reset
-    restoreXFlag = false;
-    
-  }
-
-  // plot only a single legend selection
-  function plotSingle(d) {
-        
-    class_keep = d.id.split("id").pop();
-    idx = legendClassArray.indexOf(class_keep);    
-       
-    //erase all but selected bars by setting opacity to 0
-    d3.selectAll(".bars:not(.class" + class_keep + ")")
-          .transition()
-          .duration(1000)
-          .attr("width", 0) // use because svg has no zindex to hide bars so can't select visible bar underneath
-          .style("opacity", 0);
-
-    //lower the bars to start on x-axis  
-    state.selectAll("rect").forEach(function (d, i) {        
-    
-      //get height and y posn of base bar and selected bar
-      h_keep = d3.select(d[idx]).attr("height");
-      y_keep = d3.select(d[idx]).attr("y");  
-
-      h_base = d3.select(d[0]).attr("height");
-      y_base = d3.select(d[0]).attr("y");    
-
-      h_shift = h_keep - h_base;
-      y_new = y_base - h_shift;
-
-      //reposition selected bars
-      d3.select(d[idx])
-        .transition()
-        .ease("bounce")
-        .duration(1000)
-        .delay(750)
-        .attr("y", y_new);
-
-    })
-   
-  }
-
-  //adapted change() fn in http://bl.ocks.org/mbostock/3885705
-  function change() {
-
-    if (this.checked) sortDescending = true;
-    else sortDescending = false;
-
-    colName = legendClassArray_orig[sortBy];
-
-    var x0 = x.domain(data.sort(sortDescending
-        ? function(a, b) { return b[colName] - a[colName]; }
-        : function(a, b) { return b.total - a.total; })
-        .map(function(d,i) { return d.code; }))
-        .copy();
-
-    state.selectAll(".class" + active_link)
-         .sort(function(a, b) { 
-            return x0(a.mystate) - x0(b.mystate); 
-          });
-
-    var transition = svg.transition().duration(750),
-        delay = function(d, i) { return i * 20; };
-
-    //sort bars
-    transition.selectAll(".class" + active_link)
-      .delay(delay)
-      .attr("x", function(d) {      
-        return x0(d.mystate); 
-      });      
-
-    //sort x-labels accordingly    
-    transition.select(".x.axis")
-        .call(xAxis)
-        .selectAll("g")
-        .delay(delay);
-
-   
-    transition.select(".x.axis")
-        .call(xAxis)
-      .selectAll("g")
-        .delay(delay);    
-  }
-
-
-  function barClicked(){
-    console.log(this.__data__);
-  }
-
-});
-
-var statesJson,topoJson,insightsJson = null;
-d3.json("data/in-states-topo.json", function(err,data) {
-  statesJson = data;
-});
-
-d3.json("data/in-demo-topo.json", function(error, data) {
-  topoJson = data;
-});
-
-d3.json("data/flare.json", function(error, data) {
-  insightsJson = data;
-});
-
-
-function drawCollapsible(data){
-  $("#collapsible").html("");
-
-  var margin = {top: 20, right: 120, bottom: 20, left: 120},
-    width = 800 - margin.right - margin.left,
-    height = 600 - margin.top - margin.bottom;
-
-var i = 0,
-    duration = 750,
-    root;
-
-var tree = d3.layout.tree()
-    .size([height, width]);
-
-var diagonal = d3.svg.diagonal()
-    .projection(function(d) { return [d.y, d.x]; });
-
-var svg = d3.select("#collapsible").append("svg")
-    .attr("width", width + margin.right + margin.left)
-    .attr("height", height + margin.top + margin.bottom)
-  .append("g")
-    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-function update(source) {
-
-  // Compute the new tree layout.
-  var nodes = tree.nodes(root).reverse(),
-      links = tree.links(nodes);
-
-  // Normalize for fixed-depth.
-  nodes.forEach(function(d) { d.y = d.depth * 180; });
-
-  // Update the nodes…
-  var node = svg.selectAll("g.node")
-      .data(nodes, function(d) { return d.id || (d.id = ++i); });
-
-  // Enter any new nodes at the parent's previous position.
-  var nodeEnter = node.enter().append("g")
-      .attr("class", "node")
-      .attr("transform", function(d) { return "translate(" + source.y0 + "," + source.x0 + ")"; })
-      .on("click", click);
-
-  nodeEnter.append("circle")
-      .attr("r", 1e-6)
-      .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
-
-  nodeEnter.append("text")
-      .attr("x", function(d) { return d.children || d._children ? -10 : 10; })
-      .attr("dy", ".35em")
-      .attr("text-anchor", function(d) { return d.children || d._children ? "end" : "start"; })
-      .text(function(d) { return d.name; })
-      .style("fill-opacity", 1e-6);
-
-  // Transition nodes to their new position.
-  var nodeUpdate = node.transition()
-      .duration(duration)
-      .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; });
-
-  nodeUpdate.select("circle")
-      .attr("r", 4.5)
-      .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
-
-  nodeUpdate.select("text")
-      .style("fill-opacity", 1);
-
-  // Transition exiting nodes to the parent's new position.
-  var nodeExit = node.exit().transition()
-      .duration(duration)
-      .attr("transform", function(d) { return "translate(" + source.y + "," + source.x + ")"; })
-      .remove();
-
-  nodeExit.select("circle")
-      .attr("r", 1e-6);
-
-  nodeExit.select("text")
-      .style("fill-opacity", 1e-6);
-
-  // Update the links…
-  var link = svg.selectAll("path.link")
-      .data(links, function(d) { return d.target.id; });
-
-  // Enter any new links at the parent's previous position.
-  link.enter().insert("path", "g")
-      .attr("class", "link")
-      .attr("d", function(d) {
-        var o = {x: source.x0, y: source.y0};
-        return diagonal({source: o, target: o});
-      });
-
-  // Transition links to their new position.
-  link.transition()
-      .duration(duration)
-      .attr("d", diagonal);
-
-  // Transition exiting nodes to the parent's new position.
-  link.exit().transition()
-      .duration(duration)
-      .attr("d", function(d) {
-        var o = {x: source.x, y: source.y};
-        return diagonal({source: o, target: o});
-      })
-      .remove();
-
-  // Stash the old positions for transition.
-  nodes.forEach(function(d) {
-    d.x0 = d.x;
-    d.y0 = d.y;
-  });
-}
-
-// Toggle children on click.
-function click(d) {
-  if (d.children) {
-    d._children = d.children;
-    d.children = null;
-  } else {
-    d.children = d._children;
-    d._children = null;
-  }
-  update(d);
-}
-
-
-  root = data;
-  root.x0 = height / 2;
-  root.y0 = 0;
-
-  function collapse(d) {
-    if (d.children) {
-      d._children = d.children;
-      d._children.forEach(collapse);
-      d.children = null;
-    }
-  }
-
-  root.children.forEach(collapse);
-  update(root);
-
-
-d3.select(self.frameElement).style("height", "600px");
-}
-
-
-
-function drawMap(){
-$("#map").html("");
-
-function drawIndia(data) {
-  var subunits = topojson.object(data, data.objects.subunits);
-
-  india.selectAll("path.subpath")
-    .data(subunits.geometries)
-    .enter().append("path")
-      .attr('class', function(d) { return 'subunit ' + d.id; })
-      .attr('id', function(d) { return d.id; })
-      .attr("d", path);
-}
-
-function drawIndiaPlaces(data) {
-  indiaPlaces.selectAll("circle.place")
-      .data(data.objects.places.geometries)
-      .enter().append("circle")
-      .attr("cx", function(d){ return projection(d.coordinates)[0]})
-    .attr("cy", function(d){ return projection(d.coordinates)[1]})
-    .attr("r",2)
-      .attr("class", "place")
-    
-  indiaPlaces.selectAll("text.place")
-      .data(data.objects.places.geometries)
-      .enter().append("text")
-      .attr("x", function(d){ return projection(d.coordinates)[0]+3})
-    .attr("y", function(d){ return projection(d.coordinates)[1]+3})
-    .text(function(d){ return d.properties.name})
-      .attr("class", function(d){ return "air-" + d.properties.name});
-    
-  /*indiaPlaces.append("circle")
-    .attr("stroke-width", 5)
-    .attr("r", 2)
-    .attr("cx", projection(suratPos)[0])
-    .attr("cy", projection(suratPos)[1])
-    .attr("id","sur-ant")*/
-}
-
-// Code from D3 United States Example at http://bl.ocks.org/4150951
-function drawNaturalEarth() {
-  var tiles = tile();
-
-  india.selectAll('.subunit')
-    .classed('natural-earth', true);
-
-  var clips = defs.append("clipPath")
-      .attr("id", "clip");
-  clips.append("use")
-      .attr("xlink:href", "#INX");
-  clips.append("use")
-      .attr("xlink:href", "#INA");
-  clips.append("use")
-      .attr("xlink:href", "#INN");
-  clips.append("use")
-      .attr("xlink:href", "#INL");
-
-  ne.attr("clip-path", "url(#clip)")
-      .selectAll("image")
-        .data(tiles)
-      .enter().append("image")
-        .attr("xlink:href", function(d) { return "http://" + ["a", "b", "c", "d"][Math.random() * 4 | 0] + ".tiles.mapbox.com/v3/mapbox.natural-earth-2/" + d[2] + "/" + d[0] + "/" + d[1] + ".png"; })
-        .attr("width", Math.round(tiles.scale))
-        .attr("height", Math.round(tiles.scale))
-        .attr("x", function(d) { return Math.round((d[0] + tiles.translate[0]) * tiles.scale); })
-        .attr("y", function(d) { return Math.round((d[1] + tiles.translate[1]) * tiles.scale); });
-}
-
-function drawStates(data) {
-    states.selectAll("path")
-        .data(topojson.object(data, data.objects.states).geometries)
-      .enter().append("path")
-        .attr('class', "state")
-        .attr("title", function(d) { return d.properties.name; })
-        .attr("d", path)
-        
-  //callback();
-  
-}
-
-
-var width = 400,
-    height = 400;
-
-var projection = d3.geo.mercator()
-  .center([83, 23.5])
-  .translate([width/2,height/2])
-  .scale(690);
-
-var path = d3.geo.path()
-  .projection(projection)
-  .pointRadius(2);
-  
-var tile = d3.geo.tile()
-    .scale(projection.scale() * 2 * Math.PI)
-    .translate(projection([0, 0]))
-    .zoomDelta((window.devicePixelRatio || 1) - .5);
-
-var svg = d3.select("#map")
-  .append("svg")
-    .attr("width", width)
-    .attr("height", height);
-
-
-
-var defs = svg.append("defs");
-
-var ne = svg.append("g")
-  .attr("id", "natural-earth");
-
-var india = svg.append("g")
-  .attr("id", "india");
-
-var indiaPlaces = svg.append("g")
-  .attr("id", "places");
-
-var states = svg.append("g")
-  .attr("id", "states");
-
-  drawNaturalEarth();
-  drawIndia(topoJson);
-  drawIndiaPlaces(topoJson);
-  drawStates(statesJson)
-
-
-}
-
-
-function drawGuage(data,ele){
-    $("#"+ele).html("");
-
-    var width = 200;
-    var height = width;
-
-    var svg = d3.select("#"+ele).append("svg")
-         .attr("width", width)
-         .attr("height", height)
-
-    var pi = Math.PI;
-
-    var arc = d3.svg.arc()
-           .innerRadius(50)
-           .outerRadius(80)
-           .startAngle(-3*pi/4);
-
-    //svg.append("text").text(this.name).attr("fill","#999999").attr("x",width/2).attr("y",height/7).attr("text-anchor","middle");
-    g = svg.append("g").attr("transform", "translate(" + width / 2 + "," + height/2 + ")");
-
-    g.append("text").text("67").attr("fill","#999999").attr("x",0).attr("y",0).attr("text-anchor","middle").style("font-size","25px");
-       // Add the background arc, from 0 to 100% (tau).
-    var background = g.append("path")
-        .datum({endAngle: -3*pi/4})
-        .style("fill", "red")
-        .attr("d", arc);
-
-    var y = d3.scale.linear()
-        .rangeRound([-3*pi/4, 3*pi/4]);
-
-        y.domain([0, 100]);
-
-       var foreground = g.append("path")
-           .datum({endAngle: -3*pi/4})
-           .style("fill", "blue")
-           .attr("d", arc);
-
-           background.transition()
-               .duration(300)
-               .attrTween("d", arcTween(3*pi/4,true))
-               .each(function(){
-                foreground.transition()
-                     .duration(1000)
-                     .attrTween("d", arcTween(y(67),false));
-               })
-
-
-       //d3.interval(function() {
-
-       //}, 1500);
-       var maxText =  g.append("text").attr("fill","#999999").attr("y",20).attr("text-anchor","middle").text("100")
-
-       function arcTween(newAngle,text) {
-         return function(d) {
-           var interpolate = d3.interpolate(d.endAngle, newAngle);
-           return function(t) {
-             d.endAngle = interpolate(t);
-             var path = arc(d);
-             var coords = path.split("L")[1].split("A")[0]; //<-- this is the position of the end of the line connecting the two arcs
-             if(text)
-                maxText.attr('transform', 'translate(' + coords + ')'); //<-- position text and rotate it
-             return arc(d);
-           };
-         };
-       }
-}
-
-function drawPieChart(data,ele){
-    $("#"+ele).html("");
-
-    var svg = d3.select("#"+ele)
-	.append("svg")
-	.attr("class","pie")
-	.append("g")
-
-    svg.append("g")
-	.attr("class", "slices");
-
-    svg.append("g")
-	.attr("class", "labelName");
-
-    svg.append("g")
-	.attr("class", "labelValue");
-
-    svg.append("g")
-	.attr("class", "lines");
-
-    var width = 250,
-    height = 250,
-	radius = Math.min(width, height) / 2;
-
-    var pie = d3.layout.pie()
-	.sort(null)
-	.value(function(d) {
-		return d.value;
-	});
-
-    var arc = d3.svg.arc()
-	    .outerRadius(radius * 0.9)
-	    .innerRadius(radius * 0.6);
-
-    var outerArc = d3.svg.arc()
-	    .innerRadius(radius * 0.5)
-	    .outerRadius(radius * 0.95);
-
-    var legendRectSize = (radius * 0.05);
-    var legendSpacing = radius * 0.02;
-
-
-
-
-    //var div = d3.select("body").append("div").attr("class", "toolTip");
-
-    svg.attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
-
-    var colorRange = d3.scale.category20();
-
-    var colorPie = d3.scale.ordinal()
-	.range(colorRange.range());
-
-	/* ------- PIE SLICES -------*/
-	var slice = svg.select(".slices").selectAll("path.slice")
-        .data(pie(data), function(d){ return d.data.label });
-
-    slice.enter()
-        .insert("path")
-        .style("fill", function(d) { return colorPie(d.data.label); })
-        .attr("class", "slice");
-
-    slice
-        .transition().duration(1000)
-        .attrTween("d", function(d) {
-            this._current = Object.assign({}, d, { startAngle: d.endAngle });
-            var interpolate = d3.interpolate(this._current, d);
-            this._current = interpolate(0);
-            return function(t) {
-                return arc(interpolate(t));
-            };
-        })
-
-    slice
-        .on("mouseenter", function(d){
-            d3.select(this)
-            .transition()
-            .duration(1000)
-            .attr("d", outerArc)
-
-            //div.style("left", d3.event.pageX+10+"px");
-            //div.style("top", d3.event.pageY-25+"px");
-            //div.style("display", "inline-block");
-            //div.html((d.data.label)+"<br>"+(d.data.value)+"%");
-
-        });
-    slice
-        .on("mouseleave", function(d){
-            //div.style("display", "none");
-            d3.select(this)
-            .transition()
-            .duration(500)
-            .attr("d", arc)
-        });
-
-    svg.selectAll("text")
-       .data(pie(data))
-       .enter()
-       .append("text")
-       .attr("transform", function(d) { return "translate(" + arc.centroid(d) + ")"; })
-      .attr("dy", ".35em")
-      .text(function(d) { return "dfg"; });
-
-    slice.exit()
-        .remove();
-
-    var legend = svg.selectAll('.legend')
-        .data(colorPie.domain())
-        .enter()
-        .append('g')
-        .attr('class', 'legend')
-        .attr('transform', function(d, i) {
-            var height = legendRectSize + legendSpacing;
-            var offset =  height * colorPie.domain().length / 2;
-            var horz = -3 * legendRectSize;
-            var vert = i * height - offset;
-            return 'translate(' + horz + ',' + vert + ')';
-        });
-
-    legend.append('rect')
-        .attr('width', legendRectSize)
-        .attr('height', legendRectSize)
-        .style('fill', color)
-        .style('stroke', color);
-
-    legend.append('text')
-        .attr('x', legendRectSize + legendSpacing)
-        .attr('y', legendRectSize - legendSpacing)
-        .text(function(d) { return d; });
-
-    /* ------- TEXT LABELS -------*/
-
-    /*var text = svg.select(".labelName").selectAll("text")
-        .data(pie(data), function(d){ return d.data.label });
-
-    text.enter()
-        .append("text")
-        .attr("dy", ".35em")
-        .text(function(d) {
-            return (d.data.label+": "+d.value+"%");
-        });*/
-
-    function midAngle(d){
-        return d.startAngle + (d.endAngle - d.startAngle)/2;
-    }
-
-    /*text
-        .transition().duration(1000)
-        .attrTween("transform", function(d) {
-            this._current = this._current || d;
-            var interpolate = d3.interpolate(this._current, d);
-            this._current = interpolate(0);
-            return function(t) {
-                var d2 = interpolate(t);
-                var pos = outerArc.centroid(d2);
-                pos[0] = radius * (midAngle(d2) < Math.PI ? 1 : -1);
-                return "translate("+ pos +")";
-            };
-        })
-        .styleTween("text-anchor", function(d){
-            this._current = this._current || d;
-            var interpolate = d3.interpolate(this._current, d);
-            this._current = interpolate(0);
-            return function(t) {
-                var d2 = interpolate(t);
-                return midAngle(d2) < Math.PI ? "start":"end";
-            };
-        })
-        .text(function(d) {
-            return (d.data.label+": "+d.value+"%");
-        });
-
-
-    text.exit()
-        .remove();*/
-
-    /* ------- SLICE TO TEXT POLYLINES -------*/
-
-    /*var polyline = svg.select(".lines").selectAll("polyline")
-        .data(pie(data), function(d){ return d.data.label });
-
-    polyline.enter()
-        .append("polyline");
-
-    polyline.transition().duration(1000)
-        .attrTween("points", function(d){
-            this._current = this._current || d;
-            var interpolate = d3.interpolate(this._current, d);
-            this._current = interpolate(0);
-            return function(t) {
-                var d2 = interpolate(t);
-                var pos = outerArc.centroid(d2);
-                pos[0] = radius * 0.95 * (midAngle(d2) < Math.PI ? 1 : -1);
-                return [arc.centroid(d2), outerArc.centroid(d2), pos];
-            };
-        });
-
-    polyline.exit()
-        .remove();*/
-}
-
-function modalOpened(){
-    console.log("modal opened");
-    var d = [
-		{label:"Category 1", value:19},
-        {label:"Category 2", value:5},
-        {label:"Category 3", value:13},
-        {label:"Category 4", value:17},
-        {label:"Category 5", value:19},
-        {label:"Category 6", value:27}
-        ];
-
-        var d1 = [
-    {label:"Category 1", value:19},
-        {label:"Category 2", value:5},
-        {label:"Category 3", value:13},
-        {label:"Category 4", value:17},
-        
-        ];
-    drawPieChart(d,"pieChart1");
-    drawPieChart(d1,"pieChart2");
-    drawGuage([],"guageChart1");
-    drawMap();
-    drawCollapsible(insightsJson);
-}
-
-$(document).ready(function(){
-    $('#modal-content').on('shown.bs.modal', modalOpened);
-});
-
-/*
-
-//cause wise
-var dataCause = data.filter(function(el){
-	return(el["CAUSE"] != "Total Self-employed" && el["CAUSE"] != "Total" && el["CAUSE"] != "Total Salaried")
-}).map(function(el){
-	return({
-  	label:el["CAUSE"],
-    value:el["Grand Total"],
-    male :el["Total Male"],
-    female:el["Total Female"]
-  });
-});
-console.log(dataCause);
-
-
-//age wise
-var dataAge = [];
-var dataAgeMock = {};
-
-data.forEach(function(el){
-	for(var pro in el){
-  	if(pro.startsWith("Male") || pro.startsWith("Female")){
-    	if(dataAgeMock[pro]){
-      	dataAgeMock[pro] += el[pro];
-      }else{
-      	dataAgeMock[pro] = el[pro]
-      }
-    }
-  }
-});
-//console.log(dataAgeMock);
-var dataAgeMockAgg = {};
-
-for(var prop in dataAgeMock){
-	var entity = prop.trim().split(" ").reverse().pop();
-  var key =  prop.replace(entity,"").trim();
-
-  if(dataAgeMockAgg[key]){
-  	dataAgeMockAgg[key]["value"] += dataAgeMock[prop];
-  }else{
-  	dataAgeMockAgg[key] = {
-    	value:dataAgeMock[prop]
-    }
-  }
-  dataAgeMockAgg[key][entity] = dataAgeMock[prop];
-}
-
-//console.log(dataAgeMockAgg);
-
-Object.keys(dataAgeMockAgg).forEach(function(el){
-	dataAge.push({
-  	label : el,
-    value : dataAgeMockAgg[el]["value"],
-    male : dataAgeMockAgg[el]["Male"],
-    female : dataAgeMockAgg[el]["Female"]
-  })
-});
-
-console.log(dataAge)
-*/
-
-</script>
+         </div>
+      </div>
+      <div class="text-center"> <b>Note :</b> To get a tour of how things work please click the <span class="text-primary" data-toggle="modal" data-target="#notes" style="cursor: pointer"> information icon </span> on top, and for list of abbrevations of state/UT click the <span class="text-primary" data-toggle="modal" data-target="#codes" style="cursor: pointer"> code icon </span> to its left. </div>
+      <br/>
+      <div id="textbox">
+         <p class="alignleft">&nbsp;&nbsp;Source code available at <a href="https://github.com/VinodLouis/suicide-stats-in-india" target="blank">Github</a></p>
+         <p class="alignright">Created with <span style="color:red">&#9829;</span> by <a href="http://www.vinodlouis.in" target="blank">Vinod Louis.</a>&nbsp;&nbsp;</p>
+      </div>
+      <div style="clear: both;"></div>
+      <div class="alignleft">&nbsp;&nbsp;<small> Data Source : <a href="https://data.gov.in/catalog/stateut-wise-professional-profile-suicide-victim"> data.gov.in </a></small></div>
+      <div style="clear: both;"></div>
+   </div>
+   </div>
+</body>
+<script src="scripts/vendor/jquery/jquery-1.12.4.min.js"></script>
+<script src="scripts/vendor/bootstrap/bootstrap.min.js"></script>
+<script src="scripts/vendor/tipsy/tipsy.js"></script>
+<script src="scripts/vendor/d3/d3.v3.min.js"></script>
+<script src="scripts/vendor/d3/d3.geo.tile.v0.min.js"></script>
+<script src="scripts/vendor/d3/topojson.v0.min.js"></script>
+<script src="scripts/custom/main.js"></script>
+</html>
