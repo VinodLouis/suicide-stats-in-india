@@ -8,7 +8,7 @@ Technology used:
  * Bootstrap
 
 
-For a Live Demo visit [http://www.vinodlouis.in/suicide-stats-of-india/](http://www.vinodlouis.in/suicide-stats-of-india/).
+For a Live Demo visit [http://www.vinodlouis.com/demos/suicide-stats-of-india/](http://www.vinodlouis.com/demos/suicide-stats-of-india/).
 
 Data Source : [data.gov.in](https://data.gov.in/catalog/stateut-wise-professional-profile-suicide-victim)
 
